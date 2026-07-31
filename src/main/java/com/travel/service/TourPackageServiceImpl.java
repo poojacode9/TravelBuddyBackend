@@ -61,10 +61,11 @@ public class TourPackageServiceImpl implements TourPackageService {
     @Override
     public List<TourPackageDTO> getAllPackages() {
 
-        return tourPackageRepository.findAll()
+        return tourPackageRepository
+                .findByStatus(PackageStatus.APPROVED)
                 .stream()
                 .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -170,6 +171,16 @@ public class TourPackageServiceImpl implements TourPackageService {
     public List<TourPackageDTO> getPackagesByGuide(Long guideId) {
 
         return tourPackageRepository.findByGuideId(guideId)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+    
+    @Override
+    public List<TourPackageDTO> searchPackages(String destination) {
+
+        return tourPackageRepository
+                .findByDestinationContainingIgnoreCase(destination)
                 .stream()
                 .map(this::mapToDTO)
                 .toList();

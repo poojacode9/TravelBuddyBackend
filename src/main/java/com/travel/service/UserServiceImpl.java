@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import com.travel.dto.LoginRequestDTO;
 import com.travel.dto.LoginResponseDTO;
 import com.travel.dto.UserDTO;
+import com.travel.dto.UserResponseDTO;
 import com.travel.entity.User;
 import com.travel.repository.UserRepository;
 import com.travel.security.JwtUtils;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -114,6 +116,32 @@ this.jwtUtils = jwtUtils;
                 user.getEmail(),
                 user.getRole());
     }
+    
+    
+    @Override
+    public UserResponseDTO getCurrentUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return mapToResponseDTO(user);
+    }
+    
+    private UserResponseDTO mapToResponseDTO(User user) {
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole()
+        );
+    }
+    
     private UserDTO mapToDTO(User user) {
         return new UserDTO(
                 user.getId(),

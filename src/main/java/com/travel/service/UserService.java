@@ -5,6 +5,7 @@ import java.util.List;
 import com.travel.dto.LoginRequestDTO;
 import com.travel.dto.LoginResponseDTO;
 import com.travel.dto.UserDTO;
+import com.travel.dto.UserResponseDTO;
 
 public interface UserService {
 
@@ -19,4 +20,6 @@ public interface UserService {
     String deleteUser(Long id);
     
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
+    
+    UserResponseDTO getCurrentUser();
 }

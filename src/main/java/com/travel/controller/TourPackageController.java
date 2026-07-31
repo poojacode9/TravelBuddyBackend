@@ -72,8 +72,12 @@ public class TourPackageController {
     
 
     @GetMapping("/guide/{guideId}")
-    public ResponseEntity<List<TourPackageDTO>> getGuidePackages(@PathVariable Long guideId) {
-        return ResponseEntity.ok(tourPackageService.getPackagesByGuide(guideId));
+    public ResponseEntity<List<TourPackageDTO>> getGuidePackages(
+            @PathVariable Long guideId) {
+
+        return ResponseEntity.ok(
+            tourPackageService.getPackagesByGuide(guideId)
+        );
     }
 
     
@@ -99,5 +103,13 @@ public class TourPackageController {
         );
     }
     
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<TourPackageDTO>> searchPackages(
+            @RequestParam String destination) {
+
+        return ResponseEntity.ok(
+                tourPackageService.searchPackages(destination));
+    }
     
 }

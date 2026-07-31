@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.travel.dto.BookingDTO;
+import com.travel.dto.TicketDTO;
+import com.travel.dto.payment.BookingPaymentResponseDTO;
+import com.travel.dto.payment.CreateOrderRequestDTO;
+import com.travel.dto.payment.CreateOrderResponseDTO;
 import com.travel.entity.Booking;
 import com.travel.entity.TourPackage;
 import com.travel.entity.User;
@@ -13,24 +17,29 @@ import com.travel.enums.BookingStatus;
 import com.travel.repository.BookingRepository;
 import com.travel.repository.TourPackageRepository;
 import com.travel.repository.UserRepository;
-
+import org.springframework.web.client.RestTemplate;
 @Service
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final TourPackageRepository tourPackageRepository;
+    private final RestTemplate restTemplate;
 
-    public BookingServiceImpl(BookingRepository bookingRepository,
-                              UserRepository userRepository,
-                              TourPackageRepository tourPackageRepository) {
+    public BookingServiceImpl(
+            BookingRepository bookingRepository,
+            UserRepository userRepository,
+            TourPackageRepository tourPackageRepository,
+            RestTemplate restTemplate) {
+
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.tourPackageRepository = tourPackageRepository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
-    public BookingDTO createBooking(BookingDTO bookingDTO) {
+    public BookingPaymentResponseDTO  createBooking(BookingDTO bookingDTO) {
 
         User user = userRepository.findById(bookingDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -47,18 +56,29 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Not enough seats available");
         }
 
-        tourPackage.setAvailableSeats(
-                tourPackage.getAvailableSeats() - bookingDTO.getNumberOfPersons());
+        
 
-        tourPackageRepository.save(tourPackage);
-
-        booking.setStatus(BookingStatus.CONFIRMED);
+        booking.setStatus(BookingStatus.PENDING);
         booking.setUser(user);
         booking.setTourPackage(tourPackage);
 
         Booking savedBooking = bookingRepository.save(booking);
+        CreateOrderRequestDTO paymentRequest =
+                new CreateOrderRequestDTO(
+                        savedBooking.getId(),
+                        user.getId(),
+                        savedBooking.getTotalAmount());
 
-        return mapToDTO(savedBooking);
+        CreateOrderResponseDTO paymentResponse =
+                restTemplate.postForObject(
+                        "http://localhost:8081/payments/create-order",
+                        paymentRequest,
+                        CreateOrderResponseDTO.class);
+
+        return new BookingPaymentResponseDTO(
+                mapToDTO(savedBooking),
+                paymentResponse
+        );
     }
 
     @Override
@@ -174,5 +194,57 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
 
         return mapToDTO(bookingRepository.save(booking));
+    }
+    
+    
+    @Override
+    public BookingDTO confirmBooking(Long id) {
+
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
+            return mapToDTO(booking);
+        }
+
+        TourPackage tourPackage = booking.getTourPackage();
+
+        if (tourPackage.getAvailableSeats() < booking.getNumberOfPersons()) {
+            throw new RuntimeException("Not enough seats available");
+        }
+
+        tourPackage.setAvailableSeats(
+                tourPackage.getAvailableSeats() - booking.getNumberOfPersons());
+
+        tourPackageRepository.save(tourPackage);
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+
+        return mapToDTO(bookingRepository.save(booking));
+    }
+    
+    
+    
+    @Override
+    public TicketDTO generateTicket(Long bookingId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (booking.getStatus() != BookingStatus.CONFIRMED) {
+            throw new RuntimeException("Ticket cannot be generated until payment is completed.");
+        }
+
+        return new TicketDTO(
+                booking.getId(),
+                booking.getUser().getName(),
+                booking.getUser().getEmail(),
+                booking.getTourPackage().getPackageName(),
+                booking.getTourPackage().getDestination(),
+                booking.getTravelDate().toString(),
+                booking.getNumberOfPersons(),
+                booking.getTotalAmount(),
+                booking.getStatus().name()
+        );
     }
 }

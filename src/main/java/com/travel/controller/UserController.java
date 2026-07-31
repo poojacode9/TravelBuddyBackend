@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.travel.dto.LoginRequestDTO;
 import com.travel.dto.LoginResponseDTO;
 import com.travel.dto.UserDTO;
+import com.travel.dto.UserResponseDTO;
 import com.travel.service.UserService;
 
 import jakarta.validation.Valid;
@@ -37,6 +38,12 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginRequestDTO));
     }
 
+    
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getCurrentUser() {
+        return ResponseEntity.ok(userService.getCurrentUser());
+    }
+    
     // Get All Users
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
