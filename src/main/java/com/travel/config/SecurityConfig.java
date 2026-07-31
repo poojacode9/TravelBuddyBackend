@@ -49,6 +49,14 @@ public class SecurityConfig {
                     .requestMatchers("/users/login").permitAll()
                     .requestMatchers("/users").permitAll()
 
+                 // Allow customers to view packages
+                    .requestMatchers("/packages").permitAll()
+                    .requestMatchers("/packages/search").permitAll()
+                    .requestMatchers("/packages/{id}").permitAll()
+                    
+                    
+                    .requestMatchers("/images/**").permitAll()
+                    
                     // All other APIs require JWT
                     .anyRequest().authenticated())
 

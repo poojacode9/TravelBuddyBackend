@@ -3,11 +3,13 @@ package com.travel.service;
 import java.util.List;
 
 import com.travel.dto.BookingDTO;
+import com.travel.dto.TicketDTO;
+import com.travel.dto.payment.BookingPaymentResponseDTO;
 
 public interface BookingService {
 
     // CRUD
-    BookingDTO createBooking(BookingDTO bookingDTO);
+	BookingPaymentResponseDTO createBooking(BookingDTO bookingDTO);
 
     List<BookingDTO> getAllBookings();
 
@@ -28,4 +30,8 @@ public interface BookingService {
 
     // Package
     List<BookingDTO> getBookingsByPackage(Long packageId);
+    
+    BookingDTO confirmBooking(Long id);
+    
+    TicketDTO generateTicket(Long bookingId);
 }

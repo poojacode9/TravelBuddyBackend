@@ -15,6 +15,6 @@ public interface TourPackageRepository extends JpaRepository<TourPackage, Long> 
 
 	List<TourPackage> findByGuideId(Long guideId);
 	
-
+	List<TourPackage> findByDestinationContainingIgnoreCase(String destination);
 
 }

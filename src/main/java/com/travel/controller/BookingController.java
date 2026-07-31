@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.travel.dto.BookingDTO;
+import com.travel.dto.TicketDTO;
+import com.travel.dto.payment.BookingPaymentResponseDTO;
 import com.travel.service.BookingService;
 
 import jakarta.validation.Valid;
@@ -22,7 +24,9 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingDTO> createBooking(@Valid @RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingPaymentResponseDTO> createBooking(
+            @Valid @RequestBody BookingDTO bookingDTO) {
+
         return ResponseEntity.ok(bookingService.createBooking(bookingDTO));
     }
 
@@ -71,5 +75,15 @@ public class BookingController {
     @PutMapping("/{id}/cancel")
     public ResponseEntity<BookingDTO> cancelBooking(@PathVariable Long id) {
         return ResponseEntity.ok(bookingService.cancelBooking(id));
+    }
+    
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<BookingDTO> confirmBooking(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.confirmBooking(id));
+    }
+    
+    @GetMapping("/{id}/ticket")
+    public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.generateTicket(id));
     }
 }

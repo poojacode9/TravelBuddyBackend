@@ -26,5 +26,5 @@ public interface TourPackageService {
 
     List<TourPackageDTO> getPackagesByGuide(Long guideId);
     
-    
+    List<TourPackageDTO> searchPackages(String destination);
 }
