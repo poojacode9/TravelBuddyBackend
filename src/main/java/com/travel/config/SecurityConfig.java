@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.travel.security.CustomUserDetailsService;
 import com.travel.security.JwtAuthenticationFilter;
-
+import org.springframework.http.HttpMethod;
 @EnableMethodSecurity
 @Configuration
 @EnableWebSecurity
@@ -48,6 +48,7 @@ public class SecurityConfig {
                     // Public APIs
                     .requestMatchers("/users/login").permitAll()
                     .requestMatchers("/users").permitAll()
+              
 
                  // Allow customers to view packages
                     .requestMatchers("/packages").permitAll()
@@ -57,6 +58,8 @@ public class SecurityConfig {
                     
                     .requestMatchers("/images/**").permitAll()
                     
+                    
+                    .requestMatchers(HttpMethod.PUT, "/bookings/*/confirm").permitAll()
                     // All other APIs require JWT
                     .anyRequest().authenticated())
 

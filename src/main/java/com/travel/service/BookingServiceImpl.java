@@ -17,6 +17,9 @@ import com.travel.enums.BookingStatus;
 import com.travel.repository.BookingRepository;
 import com.travel.repository.TourPackageRepository;
 import com.travel.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.web.client.RestTemplate;
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -196,7 +199,7 @@ public class BookingServiceImpl implements BookingService {
         return mapToDTO(bookingRepository.save(booking));
     }
     
-    
+    @Transactional
     @Override
     public BookingDTO confirmBooking(Long id) {
 
@@ -236,9 +239,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return new TicketDTO(
-                booking.getId(),
-                booking.getUser().getName(),
-                booking.getUser().getEmail(),
+                "TICKET-" + booking.getId(),   // ticketNumber
+                booking.getId(),               // bookingId
+                booking.getUser().getName(),   // customerName
+                booking.getUser().getEmail(),  // email
                 booking.getTourPackage().getPackageName(),
                 booking.getTourPackage().getDestination(),
                 booking.getTravelDate().toString(),

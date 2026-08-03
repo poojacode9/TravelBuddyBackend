@@ -44,6 +44,8 @@ public class JwtUtils {
     }
 
     // Extract All Claims
+    //It doesn't decide whether the request should be authenticated. 
+    //It simply gives you the data inside the JWT
     private Claims extractAllClaims(String token) {
 
         return Jwts.parserBuilder()

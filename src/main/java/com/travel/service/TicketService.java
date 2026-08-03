@@ -1,11 +1,12 @@
 package com.travel.service;
 
+import com.travel.dto.TicketDTO;
 import com.travel.entity.Ticket;
 
 public interface TicketService {
 
-    Ticket generateTicket(Long bookingId);
+	TicketDTO generateTicket(Long bookingId);
 
-    Ticket getTicketByBookingId(Long bookingId);
+    TicketDTO getTicketByBookingId(Long bookingId);
 
 }

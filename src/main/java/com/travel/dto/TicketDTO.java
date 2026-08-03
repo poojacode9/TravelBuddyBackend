@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TicketDTO {
 
+    private String ticketNumber;
     private Long bookingId;
     private String customerName;
     private String email;
@@ -18,5 +19,7 @@ public class TicketDTO {
     private Integer numberOfPersons;
     private Double amount;
     private String bookingStatus;
+
+
 
 }
