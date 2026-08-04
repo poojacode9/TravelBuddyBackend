@@ -13,4 +13,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByTourPackageGuideId(Long guideId);
 
     List<Booking> findByTourPackageId(Long packageId);
+    
+    List<Booking> findByUserEmail(String email);
+    
+    
 }

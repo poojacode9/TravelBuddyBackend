@@ -56,7 +56,13 @@ public class SecurityConfig {
                     
                     
                     .requestMatchers("/images/**").permitAll()
-                    
+                    .requestMatchers(
+                    		"/users/profile",
+                    		"/users/change-password",
+                    		"/bookings/my-bookings",
+                    		"/tickets/my-tickets"
+                    		)
+                    		.authenticated()
                     // All other APIs require JWT
                     .anyRequest().authenticated())
 

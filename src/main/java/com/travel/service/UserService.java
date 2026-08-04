@@ -2,6 +2,7 @@ package com.travel.service;
 
 import java.util.List;
 
+import com.travel.dto.ChangePasswordDTO;
 import com.travel.dto.LoginRequestDTO;
 import com.travel.dto.LoginResponseDTO;
 import com.travel.dto.UserDTO;
@@ -22,4 +23,6 @@ public interface UserService {
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
     
     UserResponseDTO getCurrentUser();
+ 
+    void changePassword(ChangePasswordDTO dto);
 }

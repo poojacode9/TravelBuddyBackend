@@ -37,4 +37,6 @@ public class BookingDTO {
 
     @NotNull(message = "Package ID is required")
     private Long packageId;
+    
+    
 }

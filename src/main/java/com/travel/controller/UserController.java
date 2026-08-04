@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.travel.dto.ChangePasswordDTO;
 import com.travel.dto.LoginRequestDTO;
 import com.travel.dto.LoginResponseDTO;
 import com.travel.dto.UserDTO;
@@ -71,5 +72,13 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         String message = userService.deleteUser(id);
         return ResponseEntity.ok(message);
+    }
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @RequestBody ChangePasswordDTO dto) {
+
+        userService.changePassword(dto);
+
+        return ResponseEntity.ok("Password Changed Successfully");
     }
 }
